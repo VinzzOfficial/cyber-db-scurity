@@ -161,7 +161,7 @@ async function addData() {
 
   await updateFile(data, file.sha, "Tambah Akses");
 
-  addResult.textContent = `nama: "${n}",\n  nomor: "${no}"`;
+  addResult.textContent = `nama: "${n}",\nnomor: "${no}"`;
   setTimeout(() => addResult.textContent = "", 5000); // ⏱️ HILANG 5 DETIK
 }
 
