@@ -161,7 +161,7 @@ async function addData() {
 
   await updateFile(data, file.sha, "Tambah Akses");
 
-  addResult.textContent = `nama: "${n}",\nnomor: "${no}"`;
+  addResult.textContent = `nama: "${n}"\nnomor: "${no}"`;
   setTimeout(() => addResult.textContent = "", 5000); // ⏱️ HILANG 5 DETIK
 }
 
@@ -183,7 +183,7 @@ async function deleteData() {
   const removed = data.data.splice(i, 1)[0];
   await updateFile(data, file.sha, "Hapus Akses");
 
-  delResult.textContent = `nama: "${removed.nama}",\nnomor: "${removed.nomor}"`;
+  delResult.textContent = `nama: "${removed.nama}"\nnomor: "${removed.nomor}"`;
   setTimeout(() => delResult.textContent = "", 5000); // ⏱️ HILANG 5 DETIK
 }
 
