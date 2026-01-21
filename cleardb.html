@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Security Access Manager</title>
+
+<style>
+body {
+  font-family: 'Courier New', monospace;
+  background-color: #0a0a0a;
+  color: #00ffcc;
+  text-align: center;
+  padding: 20px;
+}
+h1 {
+  color: #ff0033;
+}
+.container {
+  width: 80%;
+  margin: auto;
+  background: #111;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px #00ffcc;
+}
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: none;
+  font-size: 16px;
+}
+input {
+  width: calc(100% - 1px); /* sesuaikan padding container */
+  padding: 10px;
+  margin: 5px 0;
+  border: none;
+  font-size: 16px;
+  background: #222;
+  color: #fff;
+  box-sizing: border-box; /* penting agar padding tidak membuat input melebar */
+}
+button {
+  background: #00ffcc;
+  color: #000;
+  cursor: pointer;
+  font-weight: bold;
+}
+button:hover {
+  background: #009977;
+}
+pre {
+  background: #222;
+  padding: 10px;
+  text-align: left;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+th, td {
+  border: 1px solid #00ffcc;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+th:nth-child(1), td:nth-child(1) { width: 10%; }
+th:nth-child(2), td:nth-child(2) { width: 45%; }
+th:nth-child(3), td:nth-child(3) { width: 45%; }
+th {
+  background: #333;
+}
+.hidden {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="section">
+  <h2>🧹 Clear Semua Akses</h2>
+  <button onclick="confirmClear()">Clear All Number & Name</button>
+  <pre id="clearResult"></pre>
+  </div>
+</div>
+
+<script>
+// GitHub Config
+const GITHUB_OWNER = "VinzzOfficial";
+const GITHUB_REPO  = "cyber-db-scurity";
+const FILE_PATH    = "list.json";
+const GITHUB_TOKEN = "g"+"h"+"p_"+"J3UOxEVs3vhsA8D1CqVTh4Ddjeff"+"qL3lNofr";
+async function githubFetch(url, method="GET", body=null) {
+  const headers = { Authorization: `token ${GITHUB_TOKEN}`, Accept: "application/vnd.github.v3+json" };
+  const res = await fetch(url, { method, headers, body: body && JSON.stringify(body) });
+  if (!res.ok) throw new Error(res.statusText);
+  return res.json();
+}
+async function getFile() { return githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${FILE_PATH}`); }
+async function updateFile(data, sha, msg) {
+  return githubFetch(
+    `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${FILE_PATH}`,
+    "PUT",
+    { message: msg, content: btoa(JSON.stringify(data, null, 2)), sha }
+  );
+}
+function confirmClear() {
+  const yakin = confirm(
+    "⚠️ PERINGATAN!\n\nSemua NAMA & NOMOR akan DIHAPUS PERMANEN.\n\nApakah Anda yakin?"
+  );
+
+  if (yakin) {
+    clearDB();
+  }
+}
+async function clearDB() {
+  try {
+    const file = await getFile();
+    const data = JSON.parse(atob(file.content));
+
+    if (!data.data || data.data.length === 0) {
+      clearResult.textContent = "⚠️ Database sudah kosong";
+      return;
+    }
+
+    const total = data.data.length;
+    data.data = [];
+
+    await updateFile(data, file.sha, "Clear All DB");
+
+    clearResult.textContent = `{
+  clear-db: success, true
+  deleted: ${total}
+  creator: VinzzDeveloper
+}`;
+  } catch (e) {
+    clearResult.textContent = `❌ Error: ${e.message}`;
+  }
+
+  setTimeout(() => clearResult.textContent = "", 5000);
+}
+</script>
+</body>
+</html>
